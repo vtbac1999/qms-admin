@@ -22,6 +22,6 @@ const submit = () => {
         <textarea v-model="form.content"></textarea>
         <input type="file" @input="form.image = $event.target.files[0]" />
         
-        <button :disabled="form.processing">Lưu bài viết</button>
+        <button :disabled="form.processing">Lưu bài viết...</button>
     </form>
 </template> 
