@@ -13,7 +13,6 @@ jobs:
 
       - name: Deploy on Mac Mini
         run: |
-          
           docker compose up -d --build
           echo "Đợi MySQL khởi động trong 20 giây..."
           sleep 20
