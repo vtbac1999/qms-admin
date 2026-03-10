@@ -1,0 +1,38 @@
+# Laravel core
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.env.production
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+/storage/app/*
+!/storage/app/.gitignore
+/storage/framework/cache/*
+!/storage/framework/cache/.gitignore
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
+/storage/logs/*
+!/storage/logs/.gitignore
+
+# Docker & OS
+.DS_Store
+.docker/
+docker-compose.override.yml
+.phpunit.result.cache
+
+# Database (Nếu bạn để file backup hoặc data trong thư mục dự án)
+*.sql
+*.sqlite
+/docker/mysql/data
+
+# IDE
+.idea/
+.vscode/
+.env.local

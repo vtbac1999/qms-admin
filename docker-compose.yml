@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  # Laravel App (Sử dụng FrankenPHP hoặc PHP-FPM tùy bạn chọn)
+  app-laravel:
+    build: .
+    container_name: laravel_m4_app
+    restart: always
+    ports:
+      - "8000:80"
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=172.17.0.3         # Phải khớp với tên service bên dưới
+      - DB_PORT=3306
+      - DB_DATABASE=qms_admin
+      - DB_USERNAME=root
+      - DB_PASSWORD=Admin@123
+    volumes:
+      - ./:/app
+      - ./storage:/app/storage
+    depends_on:
+      - db-mysql
+    networks:
+      - m4_network
+
+  # MySQL Database
+  db-mysql:
+    image: mysql:8.0 # Hoặc mariadb:latest
+    container_name: laravel_m4_db
+    restart: always
+    environment:
+      - MYSQL_DATABASE=qms_admin
+      - MYSQL_ROOT_PASSWORD=Admin@123
+    ports:
+      - "3307:3306" # Mở cổng 3307 để bạn dùng TablePlus/Navicat kết nối từ ngoài vào
+    volumes:
+      - db_data:/var/lib/mysql # Quan trọng: Giữ lại dữ liệu khi xóa container
+    networks:
+      - m4_network
+
+networks:
+  m4_network:
+    driver: bridge
+
+volumes:
+  db_data: # Khai báo volume cho database
