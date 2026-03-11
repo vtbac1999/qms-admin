@@ -39,7 +39,7 @@ jobs:
           docker exec laravel_project2_m4 php artisan key:generate
           
           # 5. Build Frontend (npm install thường lâu, bạn có thể cân nhắc skip nếu đã có thư mục)
-          docker exec laravel_project2_m4 npm install
+          docker exec laravel_project2_m4 npm install --force
           docker exec laravel_project2_m4 npm run build
           
           # 6. Dọn dẹp cache và chạy Migration
