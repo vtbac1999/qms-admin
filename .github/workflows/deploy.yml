@@ -8,6 +8,13 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
+      - name: Pre-checkout cleanup
+        run: |
+          if [ -d "${{ github.workspace }}/node_modules" ]; then
+            sudo rm -rf ${{ github.workspace }}/node_modules
+          fi
+          # Cho phép runner có quyền trên toàn bộ thư mục làm việc
+          sudo chown -R $USER:$USER ${{ github.workspace }}
       - name: Checkout code
         uses: actions/checkout@v4
 
