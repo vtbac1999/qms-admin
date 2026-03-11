@@ -18,7 +18,8 @@ jobs:
         run: |
           # Chuyển hẳn vào thư mục mới vừa tải về
           cd fresh-deploy
-          
+          docker rm -f laravel_m4_db || true
+          docker rm -f laravel_project2_m4 || true
           # Copy file .env (nếu bạn có lưu ở thư mục cha) hoặc tạo mới như nãy mình làm
           # Ở đây ta giả định tạo mới cho chắc ăn
           echo "APP_KEY=" > .env
