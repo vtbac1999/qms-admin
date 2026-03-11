@@ -19,7 +19,8 @@ jobs:
           
           # 1. Tạo file .env (Thêm APP_URL để Vite không bị nhầm port khi chạy Docker)
           echo "APP_KEY=" > .env
-          echo "APP_URL=http://localhost:8000" >> .env
+          echo "APP_URL=https://admin.vtbac.io.vn" >> .env
+          echo "ASSET_URL=https://admin.vtbac.io.vn" >> .env
           echo "DB_CONNECTION=mysql" >> .env
           echo "DB_HOST=db-mysql" >> .env
           echo "DB_PORT=3306" >> .env
