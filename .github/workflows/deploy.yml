@@ -8,14 +8,20 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - name: Docker cleanup (The "No Sudo" Way)
+      - name: Bypass Cleanup by Renaming
         run: |
-          # Dùng một container phụ cực nhẹ (Alpine) để xóa node_modules
-          # Chúng ta mount thư mục hiện tại vào container này
-          docker run --rm -v ${{ github.workspace }}:/app alpine sh -c "rm -rf /app/node_modules /app/vendor /app/public/build"
-          
-          # Dừng toàn bộ các container cũ đang chạy để giải phóng file
+          # Dừng toàn bộ container để "nhả" folder
           docker compose down || true
+          
+          # Thay vì xóa (lỗi permission), ta đổi tên nó sang một folder rác
+          # Lệnh mv (move) thường không bị chặn quyền gắt gao như rm
+          TIMESTAMP=$(date +%s)
+          mv node_modules node_modules_old_$TIMESTAMP || true
+          mv vendor vendor_old_$TIMESTAMP || true
+          mv public/build public_build_old_$TIMESTAMP || true
+          
+          # Thông báo để mình biết
+          echo "Đã đổi tên các folder bị khóa để bypass checkout."
       - name: Checkout code
         uses: actions/checkout@v4
 
