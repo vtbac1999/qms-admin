@@ -8,13 +8,14 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps:
-      - name: Pre-checkout cleanup
+      - name: Docker cleanup (The "No Sudo" Way)
         run: |
-          if [ -d "${{ github.workspace }}/node_modules" ]; then
-            sudo rm -rf ${{ github.workspace }}/node_modules
-          fi
-          # Cho phép runner có quyền trên toàn bộ thư mục làm việc
-          sudo chown -R $USER:$USER ${{ github.workspace }}
+          # Dùng một container phụ cực nhẹ (Alpine) để xóa node_modules
+          # Chúng ta mount thư mục hiện tại vào container này
+          docker run --rm -v ${{ github.workspace }}:/app alpine sh -c "rm -rf /app/node_modules /app/vendor /app/public/build"
+          
+          # Dừng toàn bộ các container cũ đang chạy để giải phóng file
+          docker compose down || true
       - name: Checkout code
         uses: actions/checkout@v4
 
