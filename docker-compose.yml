@@ -14,6 +14,8 @@ services:
       - DB_USERNAME=root
       - DB_PASSWORD=admin123  # SỬA: Đã khớp với mật khẩu bên dưới
       - APP_DEBUG=true            # Bật để dễ xem lỗi nếu có
+      - APP_URL=https://admin.vtbac.io.vn
+      - ASSET_URL=https://admin.vtbac.io.vn
     volumes:
       - ./:/app
       - /app/vendor
