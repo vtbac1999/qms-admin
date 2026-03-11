@@ -2,36 +2,53 @@ name: Deploy Laravel M4 (Single Container)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   deploy:
     runs-on: self-hosted
-    steps:
-      # 1. Tạo một cái tên thư mục dựa trên mã ID của lần chạy này (không bao giờ trùng)
-      - name: Checkout to a fresh directory
+    steps: # Đã sửa lề đoạn này
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
-          path: "fresh-deploy" # Tải code vào thư mục 'fresh-deploy' thay vì thư mục gốc
+          path: "deploy-${{ github.run_number }}"
 
-      - name: Deploy from fresh directory
+      - name: Auto Deploy
         run: |
-          # Chuyển hẳn vào thư mục mới vừa tải về
-          cd fresh-deploy
-          docker rm -f laravel_m4_db || true
-          docker rm -f laravel_project2_m4 || true
-          # Copy file .env (nếu bạn có lưu ở thư mục cha) hoặc tạo mới như nãy mình làm
-          # Ở đây ta giả định tạo mới cho chắc ăn
+          cd deploy-${{ github.run_number }}
+          
+          # 1. Tạo file .env (Thêm APP_URL để Vite không bị nhầm port khi chạy Docker)
           echo "APP_KEY=" > .env
-          echo "DB_CONNECTION=mysql\nDB_HOST=db-mysql\nDB_PORT=3306\nDB_DATABASE=qms_admin\nDB_USERNAME=root\nDB_PASSWORD=Admin@123" >> .env
+          echo "APP_URL=http://localhost:8000" >> .env
+          echo "DB_CONNECTION=mysql" >> .env
+          echo "DB_HOST=db-mysql" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "DB_DATABASE=qms_admin" >> .env
+          echo "DB_USERNAME=root" >> .env
+          echo "DB_PASSWORD=Admin@123" >> .env
           
-          # Dừng container cũ (đang dùng folder bị khóa)
-          docker compose -f ../docker-compose.yml down || true
+          # 2. Xóa container cũ (Lưu ý dùng đúng tên trong docker-compose.yml của bạn)
+          docker rm -f laravel_project2_m4 laravel_m4_db || true
           
-          # Chạy Docker Compose mới từ thư mục này
+          # 3. Build và khởi động
           docker compose up -d --build
           
-          # Các lệnh Artisan như cũ
+          # 4. Thiết lập Laravel
+          # Chờ DB khởi động lâu hơn chút nếu máy Mac đang bận
+          sleep 7
           docker exec laravel_project2_m4 php artisan key:generate
+          
+          # 5. Build Frontend (npm install thường lâu, bạn có thể cân nhắc skip nếu đã có thư mục)
+          docker exec laravel_project2_m4 npm install
+          docker exec laravel_project2_m4 npm run build
+          
+          # 6. Dọn dẹp cache và chạy Migration
           docker exec laravel_project2_m4 php artisan config:clear
           docker exec laravel_project2_m4 php artisan migrate --force
+
+      - name: Post-cleanup old folders
+        if: always() # Chạy bước này kể cả khi các bước trên bị lỗi để dọn dẹp ổ cứng
+        run: |
+          # Thoát ra thư mục _work/qms-admin/qms-admin
+          cd ${{ github.workspace }}/.. 
+          find . -maxdepth 1 -type d -name "deploy-*" ! -name "deploy-${{ github.run_number }}" -exec rm -rf {} + || true
