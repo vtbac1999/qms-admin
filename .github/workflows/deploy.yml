@@ -8,6 +8,10 @@ jobs:
   deploy:
     runs-on: self-hosted
     steps: # Đã sửa lề đoạn này
+      - name: System Cleanup
+        run: |
+          # Xóa các image, container, network và cache thừa không dùng đến
+          docker system prune -af
       - name: Checkout code
         uses: actions/checkout@v4
         with:
