@@ -12,7 +12,7 @@ class NewsController extends Controller
     public function index()
     {
         $news = News::latest()->paginate(10);
-        return Inertia::render('News/Index', [
+        return Inertia::render('News/index', [
             'news' => $news
         ]);
     }
