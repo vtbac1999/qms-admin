@@ -8,41 +8,17 @@ services:
       - "8000:80"
     environment:
       - DB_CONNECTION=mysql
-      - DB_HOST=db-mysql          # SỬA: Dùng tên service để Docker tự nhận diện
+      - DB_HOST=36.50.55.56       
       - DB_PORT=3306
-      - DB_DATABASE=qms_admin
+      - DB_DATABAS=qms
       - DB_USERNAME=root
-      - DB_PASSWORD=Admin@123     # SỬA: Đã khớp với mật khẩu bên dưới
+      - DB_PASSWORD=admin123  # SỬA: Đã khớp với mật khẩu bên dưới
       - APP_DEBUG=true            # Bật để dễ xem lỗi nếu có
     volumes:
       - ./:/app
       - /app/vendor
       - /app/node_modules
       - ./storage:/app/storage
-    depends_on:
-      db-mysql:
-        condition: service_healthy # Chỉ chạy App khi DB đã thực sự sẵn sàng
-    networks:
-      - m4_network
-
-  # MySQL Database
-  db-mysql:
-    image: mysql:8.0
-    container_name: laravel_m4_db
-    restart: always
-    environment:
-      - MYSQL_DATABASE=qms_admin
-      - MYSQL_ROOT_PASSWORD=Admin@123 # SỬA: Khớp với App bên trên
-    ports:
-      - "3307:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-    # Thêm Healthcheck để báo cho App biết khi nào DB đã khởi động xong
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pAdmin@123"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
     networks:
       - m4_network
 

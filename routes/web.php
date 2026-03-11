@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\ProductController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -29,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('news', NewsController::class);
     Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [SettingController::class, 'update'])->name('settings.update');
+    Route::resource('products', ProductController::class);
 });
 
 require __DIR__ . '/auth.php';

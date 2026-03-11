@@ -4,26 +4,36 @@ namespace App\Http\Controllers;
 
 use App\Models\Setting;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http; // Quan trọng: Dùng để gọi API
 use Inertia\Inertia;
 
 class SettingController extends Controller
 {
-    protected $allowKeys = ['site_name', 'logo', 'banner', 'favicon', 'footer_text'];
-
     public function index()
     {
-        $settings = Setting::pluck('value', 'key')->all();
-        return Inertia::render('Settings/index', ['settings' => $settings]);
+        // Lấy tất cả setting
+        $rawSettings = Setting::pluck('value', 'key')->all();
+
+        // Xử lý riêng cho banner: Nếu là JSON thì decode thành mảng, nếu không thì để mảng rỗng
+        if (isset($rawSettings['banner'])) {
+            $rawSettings['banner'] = json_decode($rawSettings['banner'], true) ?: [];
+        } else {
+            $rawSettings['banner'] = [];
+        }
+
+        return Inertia::render('Settings/index', ['settings' => $rawSettings]);
     }
 
     public function update(Request $request)
     {
+        // Lấy các input, bao gồm cả mảng banner gửi từ Vue lên
         $inputs = $request->only(['site_name', 'logo', 'banner', 'footer_text']);
 
         foreach ($inputs as $key => $value) {
-            // Vì $value bây giờ đã là URL (string) từ FE gửi lên, 
-            // ta chỉ cần lưu trực tiếp, không cần xử lý Storage:: nữa.
+            // Nếu key là banner, chúng ta chuyển mảng thành chuỗi JSON để lưu vào DB
+            if ($key === 'banner' && is_array($value)) {
+                $value = json_encode($value);
+            }
+
             Setting::updateOrCreate(
                 ['key' => $key],
                 ['value' => $value]
@@ -32,11 +42,17 @@ class SettingController extends Controller
 
         return redirect()->back()->with('message', 'Cập nhật thành công!');
     }
+
     public function getSettings()
     {
-        // Lấy các trường cần thiết cho client
         $settings = Setting::whereIn('key', ['site_name', 'logo', 'banner', 'footer_text'])
-            ->pluck('value', 'key');
+            ->pluck('value', 'key')
+            ->toArray();
+
+        // Decode banner trước khi trả về API cho Client
+        if (isset($settings['banner'])) {
+            $settings['banner'] = json_decode($settings['banner'], true) ?: [];
+        }
 
         return response()->json([
             'success' => true,

@@ -28,7 +28,11 @@ const showingNavigationDropdown = ref(false);
                                     Dashboard
                                 </NavLink>
 
-                                <NavLink :href="route('news.index')" :active="route().current('news.index')">
+                                <NavLink :href="route('products.index')" :active="route().current('products.*')">
+                                    Quản lý Sản phẩm
+                                </NavLink>
+
+                                <NavLink :href="route('news.index')" :active="route().current('news.*')">
                                     Quản lý Tin tức
                                 </NavLink>
 
@@ -37,7 +41,7 @@ const showingNavigationDropdown = ref(false);
                                 </NavLink>
                                 
                                 <NavLink href="#" :active="false">
-                                    Quản lý Menu...
+                                    Quản lý Menu
                                 </NavLink>
                             </div>
                         </div>
@@ -80,6 +84,10 @@ const showingNavigationDropdown = ref(false);
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </ResponsiveNavLink>
+
+                        <ResponsiveNavLink :href="route('products.index')" :active="route().current('products.*')">
+                            Quản lý Sản phẩm
+                        </ResponsiveNavLink>
                         
                         <ResponsiveNavLink :href="route('news.index')" :active="route().current('news.*')">
                             Quản lý Tin tức
@@ -97,8 +105,8 @@ const showingNavigationDropdown = ref(false);
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')"> Profile </ResponsiveNavLink>
-                            <ResponsiveNavLink :href="route('logout')" method="post" as="button"> Log Out </ResponsiveNavLink>
+                            <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
+                            <DropdownLink :href="route('logout')" method="post" as="button"> Log Out </DropdownLink>
                         </div>
                     </div>
                 </div>
