@@ -34,11 +34,11 @@ jobs:
           echo "APP_URL=https://admin.vtbac.io.vn" >> .env
           echo "ASSET_URL=https://admin.vtbac.io.vn" >> .env
           echo "DB_CONNECTION=mysql" >> .env
-          echo "DB_HOST=db-mysql" >> .env
+          echo "DB_HOST=36.50.55.56" >> .env
           echo "DB_PORT=3306" >> .env
-          echo "DB_DATABASE=qms_admin" >> .env
+          echo "DB_DATABASE=qms" >> .env
           echo "DB_USERNAME=root" >> .env
-          echo "DB_PASSWORD=Admin@123" >> .env
+          echo "DB_PASSWORD=admin123" >> .env
           
           # 2. Xóa container cũ (Lưu ý dùng đúng tên trong docker-compose.yml của bạn)
           docker rm -f laravel_project2_m4 laravel_m4_db || true
